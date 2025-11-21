@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stratess Ventures | Digital Innovation Partners</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #6d8bff;
+            --secondary: #ff8db3;
+            --accent: #00e5ff;
+            --light: #1a1a2e;
+            --dark: #ffffff;
+            --text: #e0e0e0;
+            --background: #0f0f1a;
+            --card-bg: rgba(26, 26, 46, 0.9);
+            --header-bg: rgba(15, 15, 26, 0.95);
+            --shadow: rgba(0, 0, 0, 0.3);
+            --footer-bg: #0a0a14;
+            --footer-text: #ffffff;
+        }
+        
+        .light-mode {
+            --primary: #4a6fff;
+            --secondary: #ff6b9d;
+            --accent: #00e5ff;
+            --light: #ffffff;
+            --dark: #1a1a2e;
+            --text: #333333;
+            --background: #f8f9ff;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --header-bg: rgba(255, 255, 255, 0.95);
+            --shadow: rgba(0, 0, 0, 0.05);
+            --footer-bg: #1a1a2e;
+            --footer-text: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 20px 0;
+            transition: all 0.4s ease;
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+        
+        header.scrolled {
+            padding: 15px 0;
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .logo i {
+            color: var(--secondary);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        nav a:hover {
+            color: var(--primary);
+        }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        nav a:hover::after {
+            width: 100%;
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 20px;
+        }
+        
+        .theme-toggle:hover {
+            color: var(--primary);
+            transform: rotate(30deg);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--background) 0%, rgba(26, 26, 46, 0.3) 100%);
+        }
+        
+        .light-mode .hero {
+            background: linear-gradient(135deg, var(--background) 0%, rgba(230, 238, 255, 0.3) 100%);
+        }
+        
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .hero-content {
+            max-width: 700px;
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--text);
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .cta-button {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(74, 111, 255, 0.3);
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(74, 111, 255, 0.4);
+        }
+        
+        .outline-button {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 14px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .outline-button:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Section Common Styles */
+        section {
+            padding: 100px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .section-title p {
+            max-width: 600px;
+            margin: 0 auto;
+            color: var(--text);
+            font-size: 1.1rem;
+        }
+        
+        /* Story Section */
+        .story {
+            background: var(--light);
+        }
+        
+        .story-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+        
+        .story-text {
+            flex: 1;
+        }
+        
+        .story-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .story-text p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .story-visual {
+            flex: 1;
+            height: 400px;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px var(--shadow);
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        /* Values Section */
+        .values {
+            background: linear-gradient(135deg, rgba(15, 15, 26, 0.5) 0%, rgba(26, 26, 46, 0.5) 100%);
+        }
+        
+        .light-mode .values {
+            background: linear-gradient(135deg, rgba(240, 244, 255, 0.5) 0%, rgba(230, 238, 255, 0.5) 100%);
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .value-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px var(--shadow);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .value-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+        }
+        
+        .value-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px var(--shadow);
+        }
+        
+        .value-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .value-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        /* Services Section */
+        .services {
+            background: var(--light);
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .service-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px var(--shadow);
+        }
+        
+        .service-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .service-card p {
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+        
+        /* Analytics Section */
+        .analytics {
+            background: linear-gradient(135deg, rgba(15, 15, 26, 0.5) 0%, rgba(26, 26, 46, 0.5) 100%);
+        }
+        
+        .light-mode .analytics {
+            background: linear-gradient(135deg, rgba(240, 244, 255, 0.5) 0%, rgba(230, 238, 255, 0.5) 100%);
+        }
+        
+        .analytics-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .analytics-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .analytics-content p {
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        
+        .analytics-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .stat-label {
+            color: var(--text);
+            font-weight: 500;
+        }
+        
+        /* Analytics Charts */
+        .analytics-charts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        .chart-container h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-align: center;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        /* Analytics Tables */
+        .analytics-tables {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+        }
+        
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        .table-container h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-align: center;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .light-mode .data-table th, .light-mode .data-table td {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .data-table th {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .data-table tr:hover {
+            background: rgba(109, 139, 255, 0.05);
+        }
+        
+        /* Contact Section */
+        .contact {
+            background: var(--light);
+        }
+        
+        .contact-content {
+            display: flex;
+            gap: 50px;
+        }
+        
+        .contact-info {
+            flex: 1;
+        }
+        
+        .contact-info h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .contact-info p {
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(109, 139, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .contact-form {
+            flex: 1;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text);
+            transition: all 0.3s ease;
+            font-family: 'Quicksand', sans-serif;
+        }
+        
+        .light-mode .form-control {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(109, 139, 255, 0.2);
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 60px 0 30px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+        
+        .footer-about {
+            max-width: 300px;
+        }
+        
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--footer-text);
+            margin-bottom: 20px;
+            display: inline-block;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .footer-about p {
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 50px;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--footer-text);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-column ul li a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+        
+        /* Animation Classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            height: 100vh;
+            background: var(--light);
+            z-index: 1001;
+            padding: 80px 30px 30px;
+            transition: right 0.3s ease;
+            box-shadow: -5px 0 15px var(--shadow);
+        }
+        
+        .mobile-menu.active {
+            right: 0;
+        }
+        
+        .mobile-menu ul {
+            list-style: none;
+        }
+        
+        .mobile-menu ul li {
+            margin-bottom: 20px;
+        }
+        
+        .mobile-menu ul li a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 1.2rem;
+            display: block;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .light-mode .mobile-menu ul li a {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .close-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .story-content, .contact-content {
+                flex-direction: column;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 40px;
+            }
+            
+            .footer-links {
+                justify-content: space-between;
+            }
+            
+            .analytics-charts, .analytics-tables {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            nav ul {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .analytics-charts, .analytics-tables {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <i class="fas fa-shield-alt"></i>
+                Stratess Ventures
+            </a>
+            
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#story">Our Story</a></li>
+                    <li><a href="#values">Our Values</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#analytics">Analytics</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            
+            <div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+        <button class="close-menu">
+            <i class="fas fa-times"></i>
+        </button>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#story">Our Story</a></li>
+            <li><a href="#values">Our Values</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#analytics">Analytics</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
+    
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div id="canvas-container"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h1>Building Digital Futures, One Innovation at a Time</h1>
+                <p>Stratess Ventures creates stunning digital experiences that drive business growth. Our cutting-edge solutions combine innovative design with robust functionality.</p>
+                <div class="hero-buttons">
+                    <a href="#services" class="cta-button">Our Services</a>
+                    <a href="#contact" class="outline-button">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Story Section -->
+    <section class="story" id="story">
+        <div class="container">
+            <div class="story-content">
+                <div class="story-text">
+                    <h2>Our Journey to Digital Excellence</h2>
+                    <p>Founded with a vision to bridge the gap between technology and business needs, Musketeer Investment has been at the forefront of digital innovation. Our journey began when our founders recognized that businesses needed more than just websites - they needed digital partners.</p>
+                    <p>We started are team of passionate developers, designers and innovators, united by a common goal: to create digital solutions that not only look stunning but also deliver measurable results.</p>
+                </div>
+                <div class="story-visual">
+                    <div>Our Journey</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Values Section -->
+    <section class="values" id="values">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Core Values</h2>
+                <p>These principles guide everything we do and form the foundation of our partnership with clients.</p>
+            </div>
+            
+            <div class="values-grid">
+                <div class="value-card fade-in">
+                    <div class="value-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>Innovation</h3>
+                    <p>We constantly explore new technologies and methodologies to deliver cutting-edge solutions that give our clients a competitive advantage.</p>
+                </div>
+                
+                <div class="value-card fade-in">
+                    <div class="value-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3>Partnership</h3>
+                    <p>We view our clients as partners, working collaboratively to understand their goals and challenges to deliver solutions that truly meet their needs.</p>
+                </div>
+                
+                <div class="value-card fade-in">
+                    <div class="value-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Results-Driven</h3>
+                    <p>Our focus is always on delivering measurable outcomes that contribute to our clients' business growth and success.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Services</h2>
+                <p>We offer a comprehensive suite of digital solutions to transform your business and elevate your online presence.</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>Website Creation</h3>
+                    <p>Custom, responsive websites designed to captivate your audience and drive conversions with cutting-edge technology.</p>
+                </div>
+                
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Application Creation</h3>
+                    <p>Powerful web and mobile applications built with the latest frameworks to solve complex business challenges.</p>
+                </div>
+                
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Cyber Security</h3>
+                    <p>Comprehensive security solutions to protect your digital assets from threats and vulnerabilities.</p>
+                </div>
+                
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3>Maintenance & Support</h3>
+                    <p>Ongoing maintenance and support services to keep your digital products running smoothly and securely.</p>
+                </div>
+                
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-bug"></i>
+                    </div>
+                    <h3>Penetration Testing</h3>
+                    <p>Identify and fix security vulnerabilities in your applications before they can be exploited by malicious actors.</p>
+                </div>
+                
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <h3>Website Upgrades</h3>
+                    <p>Modernize your existing websites with new features, improved performance, and enhanced user experiences.</p>
+                </div>
+                
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Accounting Data Services</h3>
+                    <p>Integrate powerful accounting and data analytics capabilities into your applications for better business insights.</p>
+                </div>
+                
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Website & Application Data Management</h3>
+                    <p>Comprehensive data management solutions including collection, analysis, and visualization for informed decision-making.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Analytics Section -->
+    <section class="analytics" id="analytics">
+        <div class="container">
+            <div class="section-title">
+                <h2>Data-Driven Results</h2>
+                <p>We believe in measurable outcomes. Our solutions include comprehensive analytics to track performance and user engagement.</p>
+            </div>
+            
+            <div class="analytics-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="visitor-count">0</div>
+                    <div class="stat-label">Monthly Visitors</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-number" id="engagement-rate">0%</div>
+                    <div class="stat-label">Engagement Rate</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-number" id="conversion-rate">0%</div>
+                    <div class="stat-label">Conversion Rate</div>
+                </div>
+            </div>
+            
+            <div class="analytics-charts">
+                <div class="chart-container fade-in">
+                    <h3>User Engagement Over Time</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="engagementChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container fade-in">
+                    <h3>Traffic Sources</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="trafficChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="analytics-tables">
+                <div class="table-container fade-in">
+                    <h3>Page Performance Metrics</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Page</th>
+                                <th>Visits</th>
+                                <th>Avg. Time</th>
+                                <th>Bounce Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Home</td>
+                                <td>12,542</td>
+                                <td>3:45</td>
+                                <td>42%</td>
+                            </tr>
+                            <tr>
+                                <td>Services</td>
+                                <td>8,765</td>
+                                <td>4:20</td>
+                                <td>38%</td>
+                            </tr>
+                            <tr>
+                                <td>About</td>
+                                <td>5,432</td>
+                                <td>2:15</td>
+                                <td>51%</td>
+                            </tr>
+                            <tr>
+                                <td>Contact</td>
+                                <td>3,210</td>
+                                <td>1:50</td>
+                                <td>45%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-container fade-in">
+                    <h3>User Demographics</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Age Group</th>
+                                <th>Percentage</th>
+                                <th>Growth</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>18-24</td>
+                                <td>22%</td>
+                                <td>+5%</td>
+                            </tr>
+                            <tr>
+                                <td>25-34</td>
+                                <td>35%</td>
+                                <td>+12%</td>
+                            </tr>
+                            <tr>
+                                <td>35-44</td>
+                                <td>25%</td>
+                                <td>+8%</td>
+                            </tr>
+                            <tr>
+                                <td>45+</td>
+                                <td>18%</td>
+                                <td>+3%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>Get In Touch</h2>
+                <p>Ready to transform your digital presence? Contact us today to discuss your project.</p>
+            </div>
+            
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2>Let's Start a Conversation</h2>
+                    <p>We're excited to learn about your project and explore how we can help you achieve your digital goals. Reach out to us through any of the channels below.</p>
+                    
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <h3>Our Location</h3>
+                                <p>Windhoek, Namibia</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div>
+                                <h3>Phone Number</h3>
+                                <p>0858155780</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h3>Email Address</h3>
+                                <p>info@stratussventures.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Your Name</label>
+                            <input type="text" id="name" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="service">Service Interested In</label>
+                            <select id="service" class="form-control" required>
+                                <option value="">Select a service</option>
+                                <option value="website">Website Creation</option>
+                                <option value="application">Application Creation</option>
+                                <option value="security">Cyber Security</option>
+                                <option value="maintenance">Maintenance & Support</option>
+                                <option value="pentesting">Penetration Testing</option>
+                                <option value="upgrades">Website Upgrades</option>
+                                <option value="accounting">Accounting Data Services</option>
+                                <option value="data-management">Website & Data Management</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Project Details</label>
+                            <textarea id="message" class="form-control" required></textarea>
+                        </div>
+                        
+                        <button type="button" class="cta-button" style="width: 100%;" id="formSubmit">Send Message</button>
+                        <p style="margin-top: 15px; text-align: center; font-size: 0.9rem; opacity: 0.7;">
+                            Note: Form submission is currently disabled as we're setting up our database. Please contact us directly via email or phone.
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <a href="#home" class="footer-logo">
+                        <i class="fas fa-shield-alt"></i>
+                Stratess Ventures
+                    </a>
+                    <p>Creating digital experiences that drive business growth and captivate audiences.</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h3>Services</h3>
+                        <ul>
+                            <li><a href="#services">Website Creation</a></li>
+                            <li><a href="#services">Application Development</a></li>
+                            <li><a href="#services">Cyber Security</a></li>
+                            <li><a href="#services">Data Management</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>Company</h3>
+                        <ul>
+                            <li><a href="#story">Our Story</a></li>
+                            <li><a href="#values">Our Values</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 Stratess Ventures. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Three.js 3D Background
+        let scene, camera, renderer, particles;
+        
+        function initThreeJS() {
+            // Scene setup
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+            
+            // Create particles
+            const particleCount = 1500;
+            const particles = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+            
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                // Positions
+                positions[i] = (Math.random() - 0.5) * 100;
+                positions[i + 1] = (Math.random() - 0.5) * 100;
+                positions[i + 2] = (Math.random() - 0.5) * 100;
+                
+                // Colors
+                colors[i] = Math.random() * 0.5 + 0.5; // R
+                colors[i + 1] = Math.random() * 0.3 + 0.7; // G
+                colors[i + 2] = Math.random() * 0.5 + 0.5; // B
+            }
+            
+            particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.1,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8
+            });
+            
+            const particleSystem = new THREE.Points(particles, particleMaterial);
+            scene.add(particleSystem);
+            
+            // Camera position
+            camera.position.z = 5;
+            
+            // Animation
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                particleSystem.rotation.x += 0.0005;
+                particleSystem.rotation.y += 0.001;
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+        
+        // Dark Mode Toggle
+        function initDarkMode() {
+            const themeToggle = document.getElementById('themeToggle');
+            const icon = themeToggle.querySelector('i');
+            
+            // Check for saved theme preference - default to dark mode
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            } else {
+                // Default to dark mode
+                document.body.classList.remove('light-mode');
+                localStorage.setItem('theme', 'dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+            
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                
+                if (document.body.classList.contains('light-mode')) {
+                    localStorage.setItem('theme', 'light');
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                } else {
+                    localStorage.setItem('theme', 'dark');
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                }
+                
+                // Update charts when theme changes
+                updateChartsTheme();
+            });
+        }
+        
+        // Header scroll effect
+        function initHeaderScroll() {
+            const header = document.querySelector('header');
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        }
+        
+        // Mobile menu functionality
+        function initMobileMenu() {
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            const closeBtn = document.querySelector('.close-menu');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.add('active');
+            });
+            
+            closeBtn.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+            });
+            
+            // Close menu when clicking on a link
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                });
+            });
+        }
+        
+        // Smooth scrolling for navigation links
+        function initSmoothScrolling() {
+            const navLinks = document.querySelectorAll('nav a, .mobile-menu a');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    const targetId = link.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    if (targetSection) {
+                        const offsetTop = targetSection.offsetTop - 80;
+                        
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+        
+        // Analytics Counter Animation
+        function animateCounters() {
+            const visitorCount = document.getElementById('visitor-count');
+            const engagementRate = document.getElementById('engagement-rate');
+            const conversionRate = document.getElementById('conversion-rate');
+            
+            let visitorValue = 0;
+            let engagementValue = 0;
+            let conversionValue = 0;
+            
+            const visitorTarget = 12500;
+            const engagementTarget = 87;
+            const conversionTarget = 42;
+            
+            const interval = setInterval(() => {
+                visitorValue += Math.ceil(visitorTarget / 100);
+                engagementValue += Math.ceil(engagementTarget / 100);
+                conversionValue += Math.ceil(conversionTarget / 100);
+                
+                if (visitorValue >= visitorTarget) visitorValue = visitorTarget;
+                if (engagementValue >= engagementTarget) engagementValue = engagementTarget;
+                if (conversionValue >= conversionTarget) conversionValue = conversionTarget;
+                
+                visitorCount.textContent = visitorValue.toLocaleString();
+                engagementRate.textContent = engagementValue + '%';
+                conversionRate.textContent = conversionValue + '%';
+                
+                if (visitorValue === visitorTarget && 
+                    engagementValue === engagementTarget && 
+                    conversionValue === conversionTarget) {
+                    clearInterval(interval);
+                }
+            }, 20);
+        }
+        
+        // Analytics Charts
+        let engagementChart, trafficChart;
+        
+        function initCharts() {
+            const engagementCtx = document.getElementById('engagementChart').getContext('2d');
+            const textColor = getComputedStyle(document.body).getPropertyValue('--text');
+            const gridColor = document.body.classList.contains('light-mode') ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)';
+            
+            engagementChart = new Chart(engagementCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Page Views',
+                        data: [12000, 19000, 15000, 25000, 22000, 30000],
+                        borderColor: '#6d8bff',
+                        backgroundColor: 'rgba(109, 139, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Unique Visitors',
+                        data: [8000, 12000, 10000, 18000, 15000, 22000],
+                        borderColor: '#ff8db3',
+                        backgroundColor: 'rgba(255, 141, 179, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: textColor
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: gridColor
+                            },
+                            ticks: {
+                                color: textColor
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: gridColor
+                            },
+                            ticks: {
+                                color: textColor
+                            }
+                        }
+                    }
+                }
+            });
+            
+            const trafficCtx = document.getElementById('trafficChart').getContext('2d');
+            trafficChart = new Chart(trafficCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Direct', 'Social Media', 'Search Engines', 'Referrals', 'Email'],
+                    datasets: [{
+                        data: [35, 25, 20, 15, 5],
+                        backgroundColor: [
+                            '#6d8bff',
+                            '#ff8db3',
+                            '#00e5ff',
+                            '#00ff9d',
+                            '#ffcc00'
+                        ],
+                        borderColor: document.body.classList.contains('light-mode') ? '#ffffff' : '#1a1a2e',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: textColor,
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Update charts when theme changes
+        function updateChartsTheme() {
+            const textColor = getComputedStyle(document.body).getPropertyValue('--text');
+            const gridColor = document.body.classList.contains('light-mode') ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)';
+            const borderColor = document.body.classList.contains('light-mode') ? '#ffffff' : '#1a1a2e';
+            
+            if (engagementChart) {
+                engagementChart.options.plugins.legend.labels.color = textColor;
+                engagementChart.options.scales.y.grid.color = gridColor;
+                engagementChart.options.scales.y.ticks.color = textColor;
+                engagementChart.options.scales.x.grid.color = gridColor;
+                engagementChart.options.scales.x.ticks.color = textColor;
+                engagementChart.update();
+            }
+            
+            if (trafficChart) {
+                trafficChart.data.datasets[0].borderColor = borderColor;
+                trafficChart.options.plugins.legend.labels.color = textColor;
+                trafficChart.update();
+            }
+        }
+        
+        // Scroll animations
+        function initScrollAnimations() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            fadeElements.forEach(element => {
+                observer.observe(element);
+            });
+        }
+        
+        // Form handling (disabled for now)
+        function initForm() {
+            const formSubmit = document.getElementById('formSubmit');
+            
+            formSubmit.addEventListener('click', () => {
+                alert('Form submission is currently disabled as we\'re setting up our database. Please contact us directly via email or phone.');
+            });
+        }
+        
+        // Initialize everything when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initThreeJS();
+            initDarkMode();
+            initHeaderScroll();
+            initMobileMenu();
+            initSmoothScrolling();
+            initScrollAnimations();
+            initForm();
+            initCharts();
+            
+            // Start counter animation when the analytics section is in view
+            const analyticsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounters();
+                        analyticsObserver.unobserve(entry.target);
+                    }
+                });
+            });
+            
+            analyticsObserver.observe(document.querySelector('.analytics'));
+        });
+    </script>
+</body>
+</html>
